@@ -1,7 +1,9 @@
 const { getRandomName } = require('./names-generator.js')
-var roomMap = {};
+
+const roomMap = {}
+
 class StreamSession {
-    constructor(id, callerConn, calleeConn){
+    constructor(id, callerConn, calleeConn) {
         this.ID = id
         this.CallerIceCandidates = []
         this.CalleeIceCandidates = []
@@ -15,17 +17,16 @@ class Room {
         this.ID = id
         this.Sessions = []
         this.CallerConn = callerconn
-    };
+    }
     
     getSession(id){
         return this.Sessions[id]
     }
 
     newSession(ws){
-        let session = new StreamSession(this.newSessionID(), this.CallerConn, ws);
-        console.log('newSession', session);
-        this.Sessions[session.ID] = session;
-        return session;
+        let session = new StreamSession(this.newSessionID(), this.CallerConn, ws)
+        this.Sessions[session.ID] = session
+        return session
     }
 
     newSessionID(){
@@ -34,22 +35,22 @@ class Room {
 }
 
 function getRoom(id) {
-    return roomMap[id];
+    return roomMap[id]
 }
 
 function newRoom(ws) {
-    let room = new Room(newRoomID(), ws);
+    let room = new Room(newRoomID(), ws)
     roomMap[room.ID] = room
     return room
 }
 
 function newRoomID(){
-    let id = getRandomName();
+    let id = getRandomName()
     return id
 }
 
 function removeRoom(id){
-    roomMap[id] = null;
+    roomMap[id] = null
     delete roomMap[id]
 }
 
