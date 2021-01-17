@@ -21,7 +21,7 @@ class WSMessage {
     }
 }
 
-app.use('/static', express.static('../files/static'));
+app.use('/static', express.static(path.join(__dirname, '../files/static')));
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../files/main.html'))
 });
