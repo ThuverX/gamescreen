@@ -74,7 +74,7 @@ const preset = {
     },
 };
 
-const LaplaceVar = {
+window.LaplaceVar = {
     ui: {},
 };
 
@@ -478,6 +478,7 @@ async function doJoin(roomID) {
     };
     LaplaceVar.socket.onopen = async function () {
         print("[+] Connected to websocket");
+
     };
     LaplaceVar.socket.onmessage = async function (e) {
         try {

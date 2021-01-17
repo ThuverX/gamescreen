@@ -46,17 +46,21 @@ app.ws('/ws_serve', (ws, req) => {
         let data = JSON.parse(msg)
 
         let session = room.getSession(data.SessionID)
-
+        if(session == null){
+            return
+        }
         if (data.Type == 'addCallerIceCandidate') {
             session.CallerIceCandidates.push(data.Value)
         } else if (data.Type == 'gotOffer') {
             session.Offer = data.Value
         }
-
-        session.CalleeConn.send(msg)
+        if(session.CalleeConn){
+            session.CalleeConn.send(msg)
+        }
     })
 
     ws.on('close', () => {
+        clearInterval(_interval);
         removeRoom(room.ID)
         room.Sessions.forEach(
             session => session.CalleeConn.send(new WSMessage(session.ID, 'roomClosed', null).json()))
@@ -83,13 +87,19 @@ app.ws('/ws_connect', (ws, req) => {
         let data = JSON.parse(msg)
 
         if (data.SessionID == session.ID) {
+            console.log(data.Type);
             if (data.Type == 'addCalleeIceCandidate') {
                 session.CalleeIceCandidates.push(data.Value)
             } else if (data.Type == 'gotAnswer') {
                 session.Answer = data.Value
             }
-
-            session.CallerConn.send(msg)
+            
+            if (data.Type == 'gamepadUpdate'){
+                console.log("gamepad update wow", data.Value)
+                session.Gamepad.update(data.Value)
+            } else {
+                session.CallerConn.send(msg)
+            }
         }
     })
 

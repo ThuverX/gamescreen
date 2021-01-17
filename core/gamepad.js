@@ -4,33 +4,25 @@ let v_client = new ViGEmClient()
 
 v_client.connect()
 
-let gamepads_indices = 0
-
-module.exports = class GameSocket {
+module.exports = class Gamepad {
     io_socket
     gamepad
     index
+    connected = false
 
     controller
 
-    constructor(socket) {
-        this.io_socket = socket
-
-        this.index = gamepads_indices
-
+    constructor(ID) {
         this.controller = v_client.createX360Controller()
-
-        gamepads_indices++
-
-        this.connect()
+        this.index = ID  
     }
 
-    gamepad_create() {
-        console.log(this.index, 'is active')
-        this.controller.connect()
-    }
-
-    gamepad_update(state) {
+    update(state) {
+        if(!this.connected){
+            this.controller.connect()
+            console.log(this.index, 'is active')
+            this.connected = true
+        }
         this.controller.axis.leftX.setValue(state.axes.stickl_hor)
         this.controller.axis.leftY.setValue(state.axes.stickl_ver)
 
@@ -43,20 +35,7 @@ module.exports = class GameSocket {
         this.controller.button.Y.setValue(state.buttons.Y == 1)
     }
 
-    connect() {
-        this.io_socket.on('gamepad_message', (state) => {
-            if(!this.gamepad) this.gamepad_create(state)
-            this.gamepad = state
-
-            this.gamepad_update(state)
-        })
-    }
-
-    gamepad_destroy() {
-        console.log(this.index, 'is removed')
-    }
-
     disconnect() {
-        this.gamepad_destroy()
+        console.log(this.index, 'is removed')
     }
 }

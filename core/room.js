@@ -1,14 +1,16 @@
 const { getRandomName } = require('./names-generator.js')
+const Gamepad = require('./gamepad.js')
 
 const roomMap = {}
 
 class StreamSession {
     constructor(id, callerConn, calleeConn) {
         this.ID = id
+        this.Gamepad = new Gamepad(id)
         this.CallerIceCandidates = []
         this.CalleeIceCandidates = []
-        this.CallerConn = callerConn
-        this.CalleeConn = calleeConn
+        this.CallerConn = callerConn //Host websocket
+        this.CalleeConn = calleeConn //Client websocket
     }
 }
 
