@@ -21,9 +21,9 @@ class WSMessage {
     }
 }
 
-app.use('/static', express.static('files/static'));
+app.use('/static', express.static('../files/static'));
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, './files/main.html'))
+    res.sendFile(path.join(__dirname, '../files/main.html'))
 });
 app.ws('/ws_serve', (ws, req) => {
     console.log("new host");
